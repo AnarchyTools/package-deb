@@ -1,0 +1,6 @@
+(package
+:name "package-deb"
+:payload "package-deb"
+:platforms ["linux"]
+:type "executable"
+)

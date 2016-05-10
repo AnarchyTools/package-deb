@@ -1,0 +1,123 @@
+# Copyright (c) 2016 Anarchy Tools Contributors.
+# 
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+# 
+#    http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+set -e
+FOLDER=`pwd`
+# check dependencies
+if [ $(dpkg-query -W -f='${Status}' devscripts 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+    echo "devscripts not installed; apt-get install devscripts"
+    exit 1
+fi
+
+if [ $(dpkg-query -W -f='${Status}' dh-make 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+        echo "dh-make not installed; apt-get install dh-make"
+        exit 1
+fi
+
+# parse arguments
+ while :; do
+   case $1 in
+    --name)
+    if [ -n "$2" ]; then
+        NAME=$2
+            shift
+    fi
+        ;;
+        --version)
+        if [ -n "$2" ]; then
+            VERSION=$2
+            shift
+        fi
+        ;;
+        --depends)
+        if [ -n "$2" ]; then
+           DEPENDS=$2
+           shift
+        fi
+        ;;
+        --recommends)
+        if [ -n "$2" ]; then
+          RECOMMENDS=$2
+          shift
+        fi
+        ;;
+        *)
+            break # default case; break out of the loop
+   esac
+   shift
+done
+
+if [ -z ${NAME+x} ]; then
+   echo "name is required"
+   exit 1
+fi
+
+if [ -z ${VERSION+x} ]; then
+    echo "version is required"
+    exit 1
+fi
+
+
+
+# configure debian BS
+export USER=root
+
+# Configure your paths and filenames
+SOURCEBINPATH="bin/${NAME}.atbin"
+# look up payload by parsing the atbin format
+PAYLOAD=`grep -o ':payload .*' $SOURCEBINPATH/compiled.atpkg | grep -oP '(?<=").*(?=")'`
+
+
+SOURCEBIN=${PAYLOAD}
+PACKAGENAME=${NAME}
+DEBFOLDER=/tmp/build/${NAME}
+DEBVERSION=$VERSION
+
+DEBFOLDERNAME=$DEBFOLDER-$DEBVERSION
+
+# Create your scripts source dir
+rm -rf $DEBFOLDERNAME
+rm -rf $DEBFOLDER*
+mkdir -p $DEBFOLDERNAME
+
+# Copy payload to the source dir
+cp $SOURCEBINPATH/$SOURCEBIN $DEBFOLDERNAME
+cd $DEBFOLDERNAME
+
+# Create the packaging skeleton (debian/*)
+dh_make -s -y --createorig
+
+# Modify copyright
+echo "Unknown copyright" > debian/copyright
+
+# Remove make calls
+grep -v makefile debian/rules > debian/rules.new
+mv debian/rules.new debian/rules
+
+# debian/install must contain the list of scripts to install
+# as well as the target directory
+echo $SOURCEBIN usr/bin > debian/install
+
+# Remove the example files
+rm debian/*.ex
+
+# Fix depends
+sed -i -e "s/Depends: \${shlibs:Depends}, \${misc:Depends}/Depends: \${shlibs:Depends}, \${misc:Depends}, ${DEPENDS}/g" debian/control
+
+# Add recommends
+sed -i -e "/Architecture: any/a \
+Recommends: ${RECOMMENDS}" debian/control
+
+# Build the package.
+debuild -us -uc
