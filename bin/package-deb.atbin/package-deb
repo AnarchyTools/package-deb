@@ -56,6 +56,12 @@ fi
           shift
         fi
         ;;
+        --suggests)
+        if [ -n "$2" ]; then
+          SUGGESTS=$2
+          shift
+        fi
+        ;;
         *)
             break # default case; break out of the loop
    esac
@@ -122,6 +128,10 @@ sed -i -e "s/Depends: \${shlibs:Depends}, \${misc:Depends}/Depends: \${shlibs:De
 # Add recommends
 sed -i -e "/Architecture: any/a \
 Recommends: ${RECOMMENDS}" debian/control
+
+# Add suggests
+sed -i -e "/Architecture: any/a \
+Suggests: ${SUGGESTS}" debian/control
 
 # Build the package.
 debuild -us -uc
