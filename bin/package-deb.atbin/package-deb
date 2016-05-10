@@ -44,12 +44,6 @@ fi
             shift
     fi
         ;;
-        --version)
-        if [ -n "$2" ]; then
-            VERSION=$2
-            shift
-        fi
-        ;;
         --depends)
         if [ -n "$2" ]; then
            DEPENDS=$2
@@ -73,8 +67,8 @@ if [ -z ${NAME+x} ]; then
    exit 1
 fi
 
-if [ -z ${VERSION+x} ]; then
-    echo "version is required"
+if [ -z ${ATBUILD_PACKAGE_VERSION+x} ]; then
+    echo "ATBUILD_PACKAGE_VERSION is required"
     exit 1
 fi
 
@@ -92,7 +86,7 @@ PAYLOAD=`grep -o ':payload .*' $SOURCEBINPATH/compiled.atpkg | grep -oP '(?<=").
 SOURCEBIN=${PAYLOAD}
 PACKAGENAME=${NAME}
 DEBFOLDER=/tmp/build/${NAME}
-DEBVERSION=$VERSION
+DEBVERSION=$ATBUILD_PACKAGE_VERSION
 
 DEBFOLDERNAME=$DEBFOLDER-$DEBVERSION
 
