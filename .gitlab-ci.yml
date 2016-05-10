@@ -1,0 +1,14 @@
+linux:
+    stage: build
+    script:
+        - apt-get update
+        - apt-get install --no-install-recommends -y dh-make devscripts
+        # use package-deb to package itself!
+        # yo dawg
+        - ./bin/package-deb.atbin/package-deb --name package-deb --version 0.1 --depends "devscripts, dh-make"
+    tags:
+        - autoscale-linux
+    artifacts:
+        paths:
+            - package-deb*.deb
+    image: debian:latest
