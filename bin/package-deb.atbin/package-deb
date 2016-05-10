@@ -25,6 +25,11 @@ if [ $(dpkg-query -W -f='${Status}' dh-make 2>/dev/null | grep -c "ok installed"
         exit 1
 fi
 
+if [ $(dpkg-query -W -f='${Status}' fakeroot 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+        echo "fakeroot not installed; apt-get install fakeroot"
+        exit 1
+fi
+
 # parse arguments
  while :; do
    case $1 in
