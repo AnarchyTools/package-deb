@@ -133,4 +133,5 @@ Recommends: ${RECOMMENDS}" debian/control
 debuild -us -uc
 
 #copy
+find / -name "*.deb"
 cp /tmp/build/*.deb .
