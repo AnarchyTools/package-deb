@@ -5,8 +5,7 @@ linux:
         - apt-get install --no-install-recommends -y dh-make devscripts fakeroot build-essential
         # use package-deb to package itself!
         # yo dawg
-        - ./bin/package-deb.atbin/package-deb --name package-deb --version 0.1 --depends "devscripts, dh-make"
-        - ls
+        - ./bin/package-deb.atbin/package-deb --name package-deb --version 0.1 --depends "devscripts, dh-make, fakeroot, build-essential"
     tags:
         - autoscale-linux
     artifacts:
