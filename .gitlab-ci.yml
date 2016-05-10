@@ -2,7 +2,7 @@ linux:
     stage: build
     script:
         - apt-get update
-        - apt-get install --no-install-recommends -y dh-make devscripts
+        - apt-get install --no-install-recommends -y dh-make devscripts fakeroot
         # use package-deb to package itself!
         # yo dawg
         - ./bin/package-deb.atbin/package-deb --name package-deb --version 0.1 --depends "devscripts, dh-make"
