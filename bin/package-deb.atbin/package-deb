@@ -131,3 +131,6 @@ Recommends: ${RECOMMENDS}" debian/control
 
 # Build the package.
 debuild -us -uc
+
+#copy
+cp ../*.deb .
