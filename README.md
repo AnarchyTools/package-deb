@@ -18,13 +18,13 @@ Ask @drewcrawford for packagecloud.io access
 
 # Maintainer notes
 
-package-deb is self-hosting; it does not require AT to build.  This is primarily because we want to use it to package atbuild itself, so it cannot depend on atbuild to work.
+`package-deb` is self-hosting; it does not require AT to build.  This is primarily because we want to use it to package [atbuild](https://github.com/AnarchyTools/atbuild) itself, so it cannot depend on atbuild to work.
 
-package-deb requires a large number of Debian tools as dependencies, but using them is considered preferable to manually emitting a package file directly.
+`package-deb` requires a large number of Debian tools as dependencies, but using them is considered preferable to manually emitting a package file directly.
 
 For these reasons, it's written in shell, largely glues together Debian tools, and there is no compile step.  It's a manually-mananged [`atbin`](http://anarchytools.org/docs/atbin.html) format.  
 
-As a result, package-deb is used to package itself, which is basically the test of its correctness.
+As a result, `package-deb` is used to package itself, which is basically the test of its correctness.
 
 
 
