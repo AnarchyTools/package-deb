@@ -62,8 +62,13 @@ fi
           shift
         fi
         ;;
+        
         *)
-            break # default case; break out of the loop
+            if [ "$1" == "" ]; then
+               break
+            fi
+            echo "warning: unknown option $1"
+            shift
    esac
    shift
 done
