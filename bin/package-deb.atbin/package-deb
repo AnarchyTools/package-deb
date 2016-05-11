@@ -143,4 +143,4 @@ Suggests: ${SUGGESTS}" debian/control
 debuild -us -uc
 
 #copy
-cp /tmp/build/*.deb $FOLDER/
+cp /tmp/build/*.deb $FOLDER/bin/

@@ -13,5 +13,5 @@ linux:
         - autoscale-linux
     artifacts:
         paths:
-            - package-deb*.deb
+            - bin/package-deb*.deb
     image: debian:latest
